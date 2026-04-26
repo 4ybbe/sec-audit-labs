@@ -33,7 +33,7 @@ and detailed technical documentation for each vulnerability.
 Make sure you have Docker and Docker Compose installed on your machine.
 
 1.  Clone the repository:
-    git clone https://github.com/your-username/sec-audit-labs.git
+    git clone https://github.com/4ybbe/sec-audit-labs.git
     cd sec-audit-labs
 2.  Run with Docker Compose:
     docker-compose up --build
@@ -101,4 +101,4 @@ Certifique-se de ter o Docker e o Docker Compose instalados em sua máquina.
 Disclaimer: This project is for educational purposes only. Do not use these
 techniques on systems you do not have explicit permission to test.
 
-Developed by [Marco Antonio] - | [temp4agro@gmail.com]
+Developed by Marco Antonio - | temp4agro@gmail.com
