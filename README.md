@@ -48,7 +48,7 @@ Make sure you have Docker and Docker Compose installed on your machine.
   - Backend-Validation: Flag verification is handled server-side to prevent
     client-side "cheating".
 
-🇧🇷 Referência em Português
+Referência em Português
 
 📝 Descrição
 
