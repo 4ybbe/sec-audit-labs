@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  security-lab:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/usr/src/app
+      - /usr/src/app/node_modules # Este é o "pulo do gato": ele preserva os módulos do container
