@@ -1,8 +1,8 @@
 🛡️ SEC-AUDIT Labs - CyberSecurity PoC Platform
 
-Português | English
+English | Português 
 
-🇺🇸 English Reference
+English Reference
 
 📝 Description
 
