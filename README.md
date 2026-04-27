@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./docs/dashboard-preview.png" alt="CloudAudit Security Dashboard" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+  <img src="./docs/dashboard-preview.png" alt="AuditLabs Security Dashboard" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
   
   <br><br>
 
@@ -16,9 +16,9 @@
 
 ## 📖 Overview
 
-**SecAudit** is an intentionally vulnerable web application disguised as a modern, sleek Cloud SaaS Platform. It is designed to help developers, security enthusiasts, and penetration testers understand common web vulnerabilities in a realistic, context-driven environment.
+**AuditLabs** is an intentionally vulnerable web application disguised as a modern, sleek Cloud SaaS Platform. It is designed to help developers, security enthusiasts, and penetration testers understand common web vulnerabilities in a realistic, context-driven environment.
 
-Instead of traditional "hacker terminal" aesthetics, CloudAudit places the user inside a realistic corporate portal, demonstrating how critical flaws often hide behind clean user interfaces.
+Instead of traditional "hacker terminal" aesthetics, AuditLabs places the user inside a realistic corporate portal, demonstrating how critical flaws often hide behind clean user interfaces.
 
 ---
 
@@ -62,25 +62,20 @@ The platform currently features 4 interactive modules, each mapped to real-world
 
 ## 🚀 Getting Started
 
-### Prerequisites
-Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
-
 ### Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/4ybbe/sec-audit-labs.git
-   cd sec-audit-labs```
+   cd sec--labs
+   ```
+   
+2.  Install dependencies and start the server:
 
-2.  Install dependencies:
+    docker-compose up
 
-    npm install
 
-3.  Start the server:
-
-    node server.js
-
-4.  Open your browser and navigate to:
+3.  Open your browser and navigate to:
 
     http://localhost:3000
 
