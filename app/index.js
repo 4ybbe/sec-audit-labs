@@ -21,7 +21,7 @@ db.serialize(() => {
     db.run("INSERT INTO invoices VALUES (1001, 1, '$250.00', 'Cloud Services - Nov'), (1005, 5, '$15,000.00', 'Internal Audit - FLAG{INVOICE_IDOR_EXPOSURE}')");
 });
 
-// LAB 1: IDOR (Realista: API de faturamento)
+// LAB 1: IDOR 
 app.get('/api/v1/billing/invoice/:id', (req, res) => {
     db.get("SELECT * FROM invoices WHERE id = ?", [req.params.id], (err, row) => {
         if (row) res.json(row);
@@ -29,7 +29,7 @@ app.get('/api/v1/billing/invoice/:id', (req, res) => {
     });
 });
 
-// LAB 2: Misconfig (Realista: Header de Debug e rota Actuator)
+// LAB 2: Misconfig 
 app.get('/api/v1/system/health', (req, res) => {
     res.set('X-Debug-Mode', 'Enabled');
     res.set('X-Server-Path', '/var/www/nodesrv/prod');
@@ -44,7 +44,7 @@ app.get('/api/v1/system/debug/vars', (req, res) => {
     });
 });
 
-// LAB 3: Auth Failures (Realista: Mensagens de erro diferentes)
+// LAB 3: Auth Failures 
 app.post('/api/v1/auth/login', (req, res) => {
     const { username } = req.body;
 
@@ -57,8 +57,7 @@ app.post('/api/v1/auth/login', (req, res) => {
             });
         }
 
-        // 2. Usuário existe (A falha de enumeração)
-        // Se for o admin, retornamos a flag como parte dos metadados de debug do erro
+        // 2. Usuário existe 
         if (username === 'admin') {
             return res.status(401).json({ 
                 status: "unauthorized", 
@@ -66,7 +65,6 @@ app.post('/api/v1/auth/login', (req, res) => {
             });
         }
 
-        // Para outros usuários válidos (ex: alice), retorna erro comum
         res.status(401).json({ 
             status: "unauthorized", 
             message: "Password incorrect for user: " + username 
@@ -74,7 +72,7 @@ app.post('/api/v1/auth/login', (req, res) => {
     });
 });
 
-// LAB 4: Crypto Failures (Realista: Cookie de Sessão Manipulável)
+// LAB 4: Crypto Failures 
 app.get('/api/v1/user/me', (req, res) => {
     // Simulando leitura de um Cookie (role=user encoded em base64)
     const sessionCookie = req.headers['x-session-data'];

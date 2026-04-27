@@ -1,104 +1,98 @@
-🛡️ SEC-AUDIT Labs - CyberSecurity PoC Platform
+<div align="center">
+  <img src="./docs/dashboard-preview.png" alt="CloudAudit Security Dashboard" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+  
+  <br><br>
 
-English Reference
+  # 🛡️ AuditLabs
+  **Interactive Security Training Dashboard & Vulnerability Lab**
 
-📝 Description
+  [![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](#)
+  [![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)](#)
+  [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](#)
+  [![Security](https://img.shields.io/badge/Security-OWASP_Top_10-red?style=for-the-badge)](#)
+</div>
 
-SEC-AUDIT Labs is an interactive Proof-of-Concept (PoC) platform designed to
-demonstrate the most common web vulnerabilities identified in the OWASP Top 10.
-Instead of a simple "capture the flag" game, this project serves as a technical
-sandbox for security auditing, providing both a practical exploit environment
-and detailed technical documentation for each vulnerability.
+<br>
 
-🧪 Vulnerabilities Covered
+## 📖 Overview
 
-1.  Broken Access Control (IDOR): Exploiting insecure direct object references
-    in a billing API to access unauthorized invoices.
-2.  Security Misconfiguration: Information leak through verbose error headers
-    and exposed diagnostic endpoints.
-3.  Authentication Failures: User enumeration through inconsistent server
-    responses, allowing the identification of administrative accounts.
-4.  Cryptographic Failures: Exploitation of weak encoding (Base64) in session
-    cookies to perform privilege escalation.
+**SecAudit** is an intentionally vulnerable web application disguised as a modern, sleek Cloud SaaS Platform. It is designed to help developers, security enthusiasts, and penetration testers understand common web vulnerabilities in a realistic, context-driven environment.
 
-🛠️ Tech Stack
+Instead of traditional "hacker terminal" aesthetics, CloudAudit places the user inside a realistic corporate portal, demonstrating how critical flaws often hide behind clean user interfaces.
 
-  - Backend: Node.js (Express)
-  - Database: SQLite (In-Memory for transient labs)
-  - Frontend: React / Tailwind CSS (JetBrains Mono for terminal aesthetics)
-  - Virtualization: Docker & Docker Compose
+---
 
-🚀 Installation & Running
+## 🎯 Vulnerabilities Addressed (The Labs)
 
-Make sure you have Docker and Docker Compose installed on your machine.
+The platform currently features 4 interactive modules, each mapped to real-world security missteps:
 
-1.  Clone the repository:
-    git clone https://github.com/4ybbe/sec-audit-labs.git
-    cd sec-audit-labs
-2.  Run with Docker Compose:
-    docker-compose up --build
-3.  Access the platform: Open your browser and navigate to http://localhost:3000
+### 1. Insecure Direct Object Reference (IDOR) / Broken Access Control
+* **The Scenario:** The Order Management Service fetches client invoices based on an identity context bound to the DOM.
+* **The Flaw:** The backend trusts user-supplied input (`accountId`) without validating if the current session actually owns that ID.
+* **The Attack:** Attackers can inspect the application (F12 / DevTools), manipulate the data-attributes, and extract sensitive invoices belonging to administrative accounts.
 
-🔍 Highlights:
+### 2. Security Misconfiguration
+* **The Scenario:** An Internal Service Health dashboard used by administrators.
+* **The Flaw:** Improper production configuration leaves debug headers active (`X-Debug-Mode`) and leaks internal maintenance routes amidst a sea of legitimate server metrics.
+* **The Attack:** Attackers probe the diagnostic endpoints and analyze HTTP response headers to map out hidden infrastructure.
 
-  - Proactive Remediation: Every lab includes a "Technical Briefing" explaining
-    why the vulnerability exists and how to fix it at the code level.
-  - Clean UI/UX: Minimalist orange/dark-mode dashboard focused on readability
-    and data presentation.
-  - Backend-Validation: Flag verification is handled server-side to prevent
-    client-side "cheating".
+### 3. Authentication Failures (Account Enumeration)
+* **The Scenario:** An Identity Provider Probe testing login endpoints.
+* **The Flaw:** The API returns inconsistent HTTP responses and verbose error messages depending on whether a username exists in the database or not.
+* **The Attack:** Attackers can automate requests to differentiate between "User not found" and "Incorrect password", allowing them to enumerate valid accounts for targeted brute-force attacks.
 
-Referência em Português
+### 4. Broken Session Management (Cryptographic Failure)
+* **The Scenario:** Session context sent via HTTP Headers.
+* **The Flaw:** The application serializes user session data using simple Base64 encoding rather than cryptographically signing it (e.g., JWT) or using secure server-side sessions.
+* **The Attack:** Attackers capture the Base64 payload, decode it, escalate their privileges (`role=admin`), re-encode it, and spoof an administrative session.
 
-📝 Descrição
+---
 
-O SEC-AUDIT Labs é uma plataforma interativa de Prova de Conceito (PoC)
-desenvolvida para demonstrar as vulnerabilidades web mais comuns identificadas
-no OWASP Top 10. Mais do que um jogo de "capture the flag", este projeto serve
-como um laboratório técnico para auditoria de segurança, fornecendo um ambiente
-prático de exploração e documentação técnica detalhada para cada falha.
+## ✨ Features
 
-🧪 Vulnerabilidades Cobertas
+- **Modern UI/UX:** Built with Tailwind CSS, featuring a responsive, floating app-window design.
+- **Dark / Light Mode:** Fully supported theme toggling.
+- **Gamified Progression:** Built-in flag verification system (`FLAG{...}`) that saves progress in the browser's Local Storage.
+- **Technical Briefings:** Integrated documentation modal providing:
+  - Threat Analysis.
+  - Strategic Remediation advice.
+  - Secure Coding Patterns with syntax highlighting for **Node.js, Python, Java, and PHP**.
 
-1.  Controle de Acesso Quebrado (IDOR): Exploração de referências diretas a
-    objetos inseguros em uma API de faturamento para acessar faturas não
-    autorizadas.
-2.  Configuração Incorreta de Segurança: Vazamento de informações através de
-    headers de erro verbosos e endpoints de diagnóstico expostos.
-3.  Falhas de Autenticação: Enumeração de usuários através de respostas
-    inconsistentes do servidor, permitindo a identificação de contas
-    administrativas.
-4.  Falhas de Criptografia: Exploração de codificação fraca (Base64) em cookies
-    de sessão para realizar escalação de privilégios.
+---
 
-🛠️ Tecnologias Utilizadas
+## 🚀 Getting Started
 
-  - Backend: Node.js (Express)
-  - Banco de Dados: SQLite (Em memória para labs efêmeros)
-  - Frontend: HTML5 / Tailwind CSS (Estética minimalista com JetBrains Mono)
-  - Virtualização: Docker & Docker Compose
+### Prerequisites
+Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
 
-🚀 Instalação e Execução
+### Installation
 
-Certifique-se de ter o Docker e o Docker Compose instalados em sua máquina.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/4ybbe/sec-audit-labs.git
+   cd sec-audit-labs```
 
-1.  Clone o repositório:
-    git clone https://github.com/4ybbe/sec-audit-labs.git
-    cd sec-audit-labs
-2.  Execute com Docker Compose:
-    docker-compose up --build
-3.  Acesse a plataforma: Abra seu navegador em http://localhost:3000
+2.  Install dependencies:
 
-🔍 Diferenciais:
+    npm install
 
-  - Remediação Proativa: Cada lab inclui um "Technical Briefing" explicando por
-    que a vulnerabilidade ocorre e como corrigi-la no nível do código.
-  - UI/UX Profissional: Dashboard minimalista laranja/dark-mode focado em
-    legibilidade e apresentação de dados técnicos.
-  - Validação no Backend: A verificação de flags é feita no lado do servidor
-    para demonstrar práticas seguras de desenvolvimento.
+3.  Start the server:
 
-Disclaimer: This project is for educational purposes only. Do not use these
-techniques on systems you do not have explicit permission to test.
+    node server.js
 
-Developed by Marco Antonio - | temp4agro@gmail.com
+4.  Open your browser and navigate to:
+
+    http://localhost:3000
+
+⚠️ Disclaimer
+
+Educational Purposes Only. This project is deliberately vulnerable and is
+intended only for educational purposes, security awareness training, and local
+testing.
+
+  - Do NOT deploy this application on a public-facing server or production
+    environment.
+  - The creator is not responsible for any misuse of the information or code
+    provided in this repository.
+
+
