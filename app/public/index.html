@@ -1,323 +1,441 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <title>SEC-AUDIT // Intelligence Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuditLabs | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #e4e4e7; } /* Font color brightened to zinc-200 */
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
         .mono { font-family: 'JetBrains Mono', monospace; }
-        .sidebar { background-color: #080808; border-right: 1px solid #1f2937; }
-        .nav-link { color: #a1a1aa; transition: 0.3s; border-left: 2px solid transparent; }
-        .nav-link.active { color: #f97316; border-left: 3px solid #f97316; padding-left: 14px; font-weight: 600; }
-        .card { background-color: #0a0a0a; border: 1px solid #27272a; }
-        .console { font-size: 12px; background: #000; border: 1px solid #3f3f46; color: #fdba74; line-height: 1.6; }
-        input { background: #000; border: 1px solid #3f3f46; color: #f97316; outline: none; }
-        input:focus { border-color: #f97316; box-shadow: 0 0 10px rgba(249, 115, 22, 0.1); }
-        .docs-overlay { background: rgba(0,0,0,0.92); backdrop-filter: blur(12px); z-index: 100; }
-        .doc-text { color: #e4e4e7; line-height: 1.8; } /* Bright white-zinc for modal readability */
-    .code-window {
-        background: #0d0d0d;
-        border: 1px solid #1e1e1e;
-        border-radius: 4px;
-        margin-top: 1.5rem;
-    }
-    .code-header {
-        background: #141414;
-        padding: 6px 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #1e1e1e;
-    }
-    .code-lang { font-size: 9px; font-weight: bold; color: #f97316; letter-spacing: 1px; }
-    .code-body { padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #e4e4e7; overflow-x: auto; }
-    
-    /* Syntax Highlighting */
-    .token-keyword { color: #f97316; font-weight: bold; }
-    .token-string { color: #a1a1aa; }
-    .token-comment { color: #52525b; font-style: italic; }
-</style>
+        
+        /* Professional UI Elements */
+        .glass-card { border-radius: 10px; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: background-color 0.3s, border-color 0.3s; border-width: 1px; }
+        .console { font-size: 12px; background: #0f172a; border-radius: 8px; color: #e2e8f0; border: 1px solid #1e293b; line-height: 1.5; }
+        
+        input { outline: none; transition: all 0.2s; border-radius: 6px; border-width: 1px; }
+        input:focus { ring: 2px; }
+        
+        /* Modal & Progress */
+        .docs-overlay { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 100; }
+        .code-window { background: #1e293b; border-radius: 8px; overflow: hidden; margin-top: 0.75rem; }
+        .code-header { background: #0f172a; padding: 6px 12px; font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .code-body { padding: 12px; color: #cbd5e1; font-family: 'JetBrains Mono', monospace; font-size: 11px; overflow-x: auto; }
+
+        /* Syntax colors */
+        .token-keyword { color: #818cf8; font-weight: 600; }
+        .token-string { color: #34d399; }
+        .token-comment { color: #64748b; font-style: italic; }
+        
+        /* Custom Scrollbar for App Container */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+	body { 
+		font-family: 'Inter', sans-serif; 
+		transition: background-color 0.3s, color 0.3s; 
+		background-image: url('https://4kwallpapers.com/images/walls/thumbs_3t/24075.jpg'); 
+	}
+
+	html.dark body {
+		background-image: url('https://4kwallpapers.com/images/walls/thumbs_3t/2482.jpg');
+	}
+    </style>
 </head>
-<body class="flex min-h-screen overflow-hidden">
+<!-- Padding changed to py-[5vh] (5% top + 5% bottom = 10% vertical background) -->
+<body class="flex h-screen w-screen overflow-hidden text-slate-800 dark:text-slate-200 py-[5vh] px-6 justify-center items-center bg-cover bg-center">
 
-    <!-- SIDEBAR -->
-    <aside class="w-64 sidebar p-8 flex flex-col fixed h-full z-20 shadow-2xl">
-        <h1 class="text-white font-bold mb-12 tracking-widest text-[11px] uppercase italic">Audit_Platform_v6</h1>
-        <nav class="space-y-6 flex-1 text-zinc-100">
-            <button onclick="tab('lab1', this)" class="nav-link block text-[10px] active uppercase text-left w-full tracking-widest">01. Access Control</button>
-            <button onclick="tab('lab2', this)" class="nav-link block text-[10px] uppercase text-left w-full tracking-widest">02. Misconfiguration</button>
-            <button onclick="tab('lab3', this)" class="nav-link block text-[10px] uppercase text-left w-full tracking-widest">03. Auth Failures</button>
-            <button onclick="tab('lab4', this)" class="nav-link block text-[10px] uppercase text-left w-full tracking-widest">04. Crypto Failures</button>
-        </nav>
-        <div class="mt-auto pt-6 border-t border-zinc-800">
-            <div id="prog-pct" class="text-[10px] mb-2 text-zinc-300 uppercase font-bold tracking-widest">Progress: 0%</div>
-            <div class="w-full h-[3px] bg-zinc-900 rounded-full"><div id="prog-bar" class="h-full bg-orange-600 w-0 transition-all duration-1000 shadow-[0_0_12px_#ea580c]"></div></div>
-        </div>
-    </aside>
-
-    <div id="success-banner" class="fixed top-0 left-0 w-full bg-orange-600 text-black py-2 text-center text-[11px] font-bold uppercase tracking-[0.4em] z-[110] hidden shadow-2xl">
-        Flag Verified // Neutralized Successfully
-    </div>
-
-    <!-- MAIN AREA -->
-    <main class="flex-1 ml-64 flex flex-col items-center justify-center p-10 relative">
+    <!-- APP WRAPPER (Floating Window Effect) -->
+    <div class="flex w-full max-w-[1800px] h-full bg-slate-50 dark:bg-[#0f1423] rounded-2xl shadow-2xl border border-slate-300 dark:border-slate-800 overflow-hidden relative">
         
-        <!-- DOCS TOGGLE (MORE VISIBLE) -->
-        <button onclick="toggleDocs()" class="absolute top-10 right-10 bg-zinc-900 border border-orange-500/50 text-orange-500 px-6 py-2 rounded-full hover:bg-orange-500 hover:text-black transition flex items-center gap-3 shadow-lg group">
-            <span class="text-[10px] font-bold uppercase tracking-[0.2em]">View Technical Briefing</span>
-            <svg class="group-hover:stroke-black" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        </button>
+        <!-- SIDEBAR -->
+        <aside class="w-60 bg-white dark:bg-slate-900/50 border-r border-slate-200 dark:border-slate-800 p-5 flex flex-col h-full shrink-0">
+            <div class="flex items-center gap-2 px-1 mb-6">
+                <div class="w-7 h-7 bg-indigo-600 rounded-md flex items-center justify-center text-white shadow-md shadow-indigo-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h1 class="font-bold text-slate-800 dark:text-white tracking-tight text-base">AuditLabs <span class="text-indigo-600 dark:text-indigo-400">v6</span></h1>
+            </div>
+            
+            <nav class="flex-1 space-y-1">
+                <div class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1 mb-2">Modules</div>
+                <button onclick="tab('lab1', this)" class="nav-link flex items-center gap-2.5 w-full px-3 py-2 text-xs rounded-md active bg-indigo-50 text-indigo-600 font-semibold dark:bg-indigo-900/30 dark:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    Access Control
+                </button>
+                <button onclick="tab('lab2', this)" class="nav-link flex items-center gap-2.5 w-full px-3 py-2 text-xs rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    Misconfiguration
+                </button>
+                <button onclick="tab('lab3', this)" class="nav-link flex items-center gap-2.5 w-full px-3 py-2 text-xs rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                    Auth Failures
+                </button>
+                <button onclick="tab('lab4', this)" class="nav-link flex items-center gap-2.5 w-full px-3 py-2 text-xs rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    Crypto Failures
+                </button>
+            </nav>
 
-        <div class="w-full max-w-xl">
-            <!-- LAB 1 -->
-            <div id="lab1" class="tab-pane">
-                <h2 class="text-white text-2xl font-bold mb-4 tracking-tighter uppercase">Identity Management</h2>
-                <p class="text-zinc-200 text-sm mb-8 leading-relaxed italic">Hint: Access system-level invoices to find the first breach.</p>
-                <div class="card p-10 rounded-sm flex flex-col items-center">
-                    <div class="flex gap-4 w-full">
-                        <input type="number" id="l1-in" value="1001" class="px-5 py-3 w-full text-sm font-bold">
-                        <button onclick="l1()" class="bg-orange-600 text-black px-10 text-[10px] font-bold uppercase hover:bg-orange-400 transition tracking-widest">Execute</button>
+            <div class="mt-auto p-3 bg-slate-50 dark:bg-slate-800/40 rounded-lg border border-slate-200 dark:border-slate-800">
+                <div class="flex justify-between items-center mb-1.5">
+                    <span id="prog-pct" class="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase">Audit Score: 0%</span>
+                </div>
+                <div class="w-full h-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-indigo-600 dark:bg-indigo-500 w-0 transition-all duration-1000"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <main class="flex-1 overflow-y-auto flex flex-col relative">
+            
+            <!-- TOPBAR -->
+            <header class="h-14 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 shrink-0 sticky top-0 z-10">
+                <div id="breadcrumb" class="text-[11px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wide">Environment <span class="text-slate-800 dark:text-slate-300 font-bold ml-2">STAGING-CLUSTER-01</span></div>
+                
+                <div class="flex items-center gap-3">
+                    <!-- DARK MODE TOGGLE -->
+                    <button onclick="toggleTheme()" class="p-1.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Toggle Dark Mode">
+                        <svg id="theme-icon-dark" class="hidden w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        <svg id="theme-icon-light" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    </button>
+
+                    <button onclick="toggleDocs()" class="flex items-center gap-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-3 py-1.5 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition text-[10px] uppercase tracking-wider font-bold shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                        Technical Briefing
+                    </button>
+                </div>
+            </header>
+
+            <div id="success-banner" class="w-full bg-emerald-500 text-white py-2 text-center text-[10px] font-bold uppercase tracking-widest hidden transition-all">
+                ✓ Lab Verified Successfully // Entry Recorded
+            </div>
+
+            <!-- Content Container -->
+            <div class="p-6 max-w-3xl mx-auto w-full flex-1 flex flex-col">
+                <!-- CONTENT AREA -->
+                <div class="w-full">
+                    
+                    <!-- LAB 1 -->
+                    <div id="lab1" class="tab-pane animate-in fade-in duration-300">
+                        <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-1">Order Management Service</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs mb-5 leading-relaxed">Check and manage customer invoices. Vulnerability suspected in direct reference parameter mapping.</p>
+                        <div class="glass-card bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800/80 p-5">
+                            <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Invoice Identifier</label>
+                            <div class="flex gap-2 mb-4">
+                                <input type="number" id="l1-in" value="1001" class="px-3 py-2 w-40 text-xs font-semibold bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:border-indigo-500 dark:focus:border-indigo-500">
+                                <button onclick="l1()" class="bg-indigo-600 text-white px-5 py-2 rounded-md text-[10px] font-bold uppercase hover:bg-indigo-700 transition shadow-sm">Fetch Invoice</button>
+                            </div>
+                            <div id="l1-out" class="console p-4 hidden whitespace-pre-wrap font-mono"></div>
+                        </div>
                     </div>
-                    <div id="l1-out" class="console mt-8 p-6 w-full hidden whitespace-pre"></div>
+
+                    <!-- LAB 2 -->
+                    <div id="lab2" class="tab-pane hidden animate-in fade-in">
+                        <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-1">Internal Service Health</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs mb-5 leading-relaxed">Probe service diagnostic headers and discover leaked environment metadata amidst the noise.</p>
+                        <div class="glass-card bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800/80 p-5">
+                            <button onclick="l2()" class="w-full bg-slate-800 dark:bg-slate-800 text-white py-3 rounded-lg text-xs font-bold hover:bg-slate-900 dark:hover:bg-slate-700 transition flex items-center justify-center gap-2 shadow-sm border border-transparent dark:border-slate-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                                Run Diagnostics Scan
+                            </button>
+                            <div id="l2-out" class="console mt-4 p-4 hidden whitespace-pre-wrap text-[11px] text-slate-300 dark:text-slate-400 overflow-x-auto"></div>
+                        </div>
+                    </div>
+
+                    <!-- LAB 3 -->
+                    <div id="lab3" class="tab-pane hidden animate-in fade-in">
+                        <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-1">Identity Provider Probe</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs mb-5 leading-relaxed">Identify username validation inconsistencies that allow account enumeration via authentication feedback.</p>
+                        <div class="glass-card bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800/80 p-5">
+                            <div class="space-y-3 max-w-sm mx-auto">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Username / Handle</label>
+                                    <input type="text" id="l3-u" placeholder="IDENTIFIER" class="w-full px-3 py-2 text-xs font-medium bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:border-indigo-500">
+                                </div>
+                                <button onclick="l3()" class="w-full bg-indigo-600 text-white py-2.5 rounded-md text-[10px] uppercase tracking-wide font-bold transition shadow-sm hover:bg-indigo-700">Probe Endpoint</button>
+                            </div>
+                            <div id="l3-out" class="console mt-5 p-4 hidden text-center border-l-4 border-indigo-500 text-[11px]"></div>
+                        </div>
+                    </div>
+
+                    <!-- LAB 4 -->
+                    <div id="lab4" class="tab-pane hidden animate-in fade-in">
+                        <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-1">Session Integrity Analysis</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs mb-5 leading-relaxed">Session data detected in transit. Verify cryptographic strength and session serialization integrity.</p>
+                        <div class="glass-card bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800/80 p-5">
+                            <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/50 rounded-md p-3 mb-4 text-[11px] text-amber-700 dark:text-amber-500 italic">
+                                Captured Header Value (Base64): <span class="font-bold">cm9sZT11c2Vy</span>
+                            </div>
+                            <div class="space-y-3">
+                                <input type="text" id="l4-h" placeholder="RE-ENCODED_SESSION_PAYLOAD" class="w-full px-3 py-2 text-xs font-mono tracking-tight bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:border-indigo-500">
+                                <button onclick="l4()" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 py-2.5 rounded-md text-[10px] uppercase font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition">Update Identity Context</button>
+                            </div>
+                            <div id="l4-out" class="console mt-5 p-4 hidden whitespace-pre"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBMISSION SECTION -->
+                <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
+                    <div class="flex gap-3 items-center bg-white dark:bg-slate-900 p-3 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800 transition-colors duration-300">
+                        <div class="bg-indigo-50 dark:bg-indigo-900/30 p-1.5 rounded text-indigo-600 dark:text-indigo-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                        </div>
+                        <input type="text" id="flag-in" placeholder="SUBMIT EXTRACTED FLAG" class="px-2 py-1 flex-1 text-xs font-semibold placeholder:text-slate-300 dark:placeholder:text-slate-600 uppercase tracking-wider bg-transparent border-none focus:ring-0">
+                        <button onclick="verify()" class="bg-slate-800 text-white px-6 py-2 rounded-md text-[9px] font-bold uppercase hover:bg-slate-900 dark:bg-indigo-600 dark:hover:bg-indigo-500 transition shadow-sm">Validate</button>
+                    </div>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- LAB 2 -->
-            <div id="lab2" class="tab-pane hidden">
-                <h2 class="text-white text-2xl font-bold mb-4 tracking-tighter uppercase italic">System Diagnostics</h2>
-                <div class="card p-10 rounded-sm">
-                    <button onclick="l2()" class="w-full border-2 border-zinc-800 py-4 text-[10px] font-bold hover:border-orange-500 transition text-zinc-300 tracking-[0.2em]">SCAN_DIAGNOSTICS</button>
-                    <div id="l2-out" class="console mt-8 p-6 hidden whitespace-pre"></div>
-                </div>
+    <!-- DOCS MODAL (CLEANER) -->
+    <div id="docs-modal" class="fixed inset-0 z-[150] flex items-center justify-center hidden docs-overlay p-4 sm:p-6">
+        <div class="max-w-3xl w-full bg-white dark:bg-slate-900 rounded-xl p-8 relative overflow-y-auto max-h-[85vh] shadow-2xl border border-slate-200 dark:border-slate-700">
+            <button onclick="toggleDocs()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div id="docs-content" class="space-y-6">
+                <!-- Injected -->
             </div>
-
-            <!-- LAB 3 -->
-            <div id="lab3" class="tab-pane hidden">
-                <h2 class="text-white text-2xl font-bold mb-4 tracking-tighter uppercase italic text-orange-500">Authentication Probe</h2>
-                <div class="card p-10 space-y-4 rounded-sm">
-                    <input type="text" id="l3-u" placeholder="USERNAME_IDENTIFIER" class="w-full px-5 py-4 text-xs tracking-widest">
-                    <button onclick="l3()" class="w-full bg-orange-600 text-black py-4 text-[10px] font-bold transition uppercase tracking-[0.2em]">Sign_In</button>
-                    <div id="l3-out" class="console mt-8 p-6 hidden"></div>
-                </div>
-            </div>
-
-            <!-- LAB 4 -->
-            <div id="lab4" class="tab-pane hidden">
-                <h2 class="text-white text-2xl font-bold mb-4 tracking-tighter uppercase italic">Cookie Interception</h2>
-                <div class="card p-10 space-y-6 rounded-sm">
-                    <div class="console p-4 italic text-zinc-300">Session_Data (Base64): cm9sZT11c2Vy</div>
-                    <input type="text" id="l4-h" placeholder="RE-ENCODED_ADMIN_TOKEN" class="w-full px-5 py-4 text-xs tracking-widest font-bold">
-                    <button onclick="l4()" class="w-full bg-zinc-800 hover:bg-orange-500 hover:text-black py-4 text-[10px] font-bold uppercase transition tracking-[0.2em]">Validate_Identity</button>
-                    <div id="l4-out" class="console mt-8 p-6 hidden"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- FLAG VERIFY (HIGH CONTRAST) -->
-        <div class="w-full max-w-xl mt-20 pt-10 border-t border-zinc-800 flex gap-4">
-            <input type="text" id="flag-in" placeholder="SUBMIT_OBTAINED_FLAG" class="px-6 py-4 flex-1 text-[11px] font-bold tracking-[0.2em] uppercase placeholder:text-zinc-600">
-            <button onclick="verify()" class="bg-zinc-100 text-black px-10 text-[11px] font-bold uppercase hover:bg-orange-500 transition shadow-[0_0_20px_rgba(255,255,255,0.05)]">Verify</button>
-        </div>
-
-    </main>
-
-<div id="docs-modal" class="fixed inset-0 z-[150] flex items-center justify-center hidden docs-overlay p-6">
-    <div class="max-w-5xl w-full bg-[#0a0a0a] border-2 border-orange-600 p-8 md:p-12 relative overflow-y-auto max-h-[90vh] shadow-2xl rounded-sm">
-        <button onclick="toggleDocs()" class="absolute top-6 right-6 text-orange-500 hover:text-white font-bold text-[10px] uppercase tracking-widest border border-orange-500 px-4 py-2">Close [ESC]</button>
-        
-        <div id="docs-content" class="space-y-10">
-            <!-- Content Injected via JS -->
         </div>
     </div>
-</div>
 
 <script>
+    // --- THEME TOGGLE LOGIC ---
+    function initTheme() {
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            updateThemeIcon(true);
+        } else {
+            document.documentElement.classList.remove('dark');
+            updateThemeIcon(false);
+        }
+    }
+    
+    function toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.theme = isDark ? 'dark' : 'light';
+        updateThemeIcon(isDark);
+    }
+
+    function updateThemeIcon(isDark) {
+        document.getElementById('theme-icon-dark').classList.toggle('hidden', !isDark);
+        document.getElementById('theme-icon-light').classList.toggle('hidden', isDark);
+    }
+    initTheme();
+    // --------------------------
+
     const briefings = {
         lab1: {
-            title: "Broken Access Control (IDOR)",
-            desc: "IDOR occurs when an application exposes a reference to an internal implementation object. Attackers can manipulate these references to access unauthorized data.",
-            remedy: "Verify user permissions for the specific object requested in the database query.",
+            title: "IDOR - Insecure Direct Object Reference",
+            desc: "The application uses user-supplied input to access objects directly without permission checks. By incrementing or guessing identifiers, an attacker can access sensitive resources from other users.",
+            remedy: "Implement granular access control lists (ACLs) or enforce checking if the session user is authorized for the specific ID requested.",
             codes: [
-                { lang: "Node.js (Express)", code: "db.get('SELECT * FROM invoices WHERE id = ? AND user_id = ?', [invoiceId, req.user.id]);" },
-                { lang: "PHP (PDO)", code: "$stmt = $pdo->prepare('SELECT * FROM invoices WHERE id = :id AND user_id = :uid');\n$stmt->execute(['id' => $id, 'uid' => $_SESSION['user_id']]);" },
-                { lang: "Python (Django)", code: "invoice = get_object_or_404(Invoice, id=invoice_id, owner=request.user)" }
+                { lang: "Node.js (Express)", code: "db.get('SELECT * FROM invoices WHERE id = ? AND owner_id = ?', [invoiceId, req.session.userId]);" },
+                { lang: "Python (Django)", code: "invoice = get_object_or_404(Invoice, id=invoice_id, owner=request.user)" },
+                { lang: "PHP (PDO)", code: "$stmt = $pdo->prepare('SELECT * FROM invoices WHERE id = :id AND owner_id = :uid');\n$stmt->execute(['id' => $id, 'uid' => $_SESSION['user_id']]);" }
             ]
         },
         lab2: {
             title: "Security Misconfiguration",
-            desc: "Leaking system internal paths and debug info through headers or unhandled exceptions provides a roadmap for attackers.",
-            remedy: "Disable verbose error reporting and diagnostic endpoints in production environments.",
+            desc: "Improper environment configuration led to debug headers (X-Debug-Mode) being active in production, leaking the existence of maintenance endpoints hidden among normal server chatter.",
+            remedy: "Standardize configurations across environments and strip debugging headers in production web server settings.",
             codes: [
-                { lang: "Node.js (Express)", code: "app.disable('x-powered-by');\napp.use((err, req, res, next) => res.status(500).send('Something went wrong'));" },
-                { lang: "PHP (ini)", code: "ini_set('display_errors', 0);\nini_set('log_errors', 1);" },
-                { lang: "Nginx (Config)", code: "server_tokens off;\nadd_header X-Content-Type-Options nosniff;" }
+                { lang: "Nginx Configuration", code: "proxy_hide_header X-Debug-Mode;\nadd_header Server-Tokens off;" },
+                { lang: "Node.js (Express)", code: "app.disable('x-powered-by');\napp.use((err, req, res, next) => {\n    res.status(500).send('Internal Server Error');\n});" },
+                { lang: "Java (Spring Boot properties)", code: "server.error.include-stacktrace=never\nmanagement.endpoints.web.exposure.include=health" }
             ]
         },
         lab3: {
-            title: "Authentication Failures (Enumeration)",
-            desc: "Inconsistent error messages allow attackers to guess valid usernames and focus their brute-force attacks.",
-            remedy: "Return generic error messages and implement rate limiting.",
+            title: "Authentication / Enumeration",
+            desc: "Inconsistent server responses between 'user not found' and 'wrong password' allow attackers to probe valid usernames and focus brute-force attacks.",
+            remedy: "Use a single, generic error message like 'Invalid username or password' for all failed authentication attempts.",
             codes: [
-                { lang: "Node.js", code: "if (!user || !validPass) return res.status(401).send('Invalid username or password');" },
-                { lang: "Python (Flask)", code: "if not check_password_hash(user.password, password):\n    return 'Login failed', 401" },
-                { lang: "Security Strategy", code: "// Implement account lockout or captchas after 5 failed attempts." }
+                { lang: "Node.js (Express)", code: "if (!user || !validPass) {\n    return res.status(401).json({ message: 'Invalid username or password' });\n}" },
+                { lang: "Python (Flask)", code: "if not user or not check_password_hash(user.password, password):\n    return jsonify({'message': 'Invalid username or password'}), 401" },
+                { lang: "Java (Spring Security)", code: "if (!passwordEncoder.matches(rawPassword, user.getPassword())) {\n    throw new BadCredentialsException(\"Invalid username or password\");\n}" }
             ]
         },
         lab4: {
-            title: "Cryptographic Failures",
-            desc: "Encoding (Base64) is not encryption. Attackers can hijack sessions by modifying the encoded data.",
-            remedy: "Use cryptographically signed tokens or server-side session management.",
+            title: "Broken Session Management",
+            desc: "Encoding data (Base64) provides no security against tampering. If the server trusts this encoded cookie blindly, privilege escalation occurs.",
+            remedy: "Sign and encrypt cookies using strong algorithms (HMAC) or use modern tokens like JWT with secret key validation.",
             codes: [
-                { lang: "Node.js (JWT)", code: "const token = jwt.sign({ role: 'admin' }, process.env.SECRET_KEY, { expiresIn: '1h' });" },
-                { lang: "PHP (Sodium)", code: "$sealed = crypto_secretbox($message, $nonce, $key);" },
-                { lang: "Python (Fernet)", code: "from cryptography.fernet import Fernet\nf = Fernet(key)\ntoken = f.encrypt(b'role=admin')" }
+                { lang: "Node.js (JWT)", code: "const token = jwt.sign({ role: 'admin' }, process.env.SIGNING_KEY, { expiresIn: '1h' });" },
+                { lang: "Python (PyJWT)", code: "import jwt\ntoken = jwt.encode({'role': 'admin'}, app.config['SECRET_KEY'], algorithm='HS256')" },
+                { lang: "PHP (Sodium)", code: "$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);\n$encrypted = sodium_crypto_secretbox(json_encode(['role'=>'admin']), $nonce, $key);" }
             ]
         }
     };
 
     function toggleDocs(specificKey = null) {
-    const modal = document.getElementById('docs-modal');
-    const activeLabBtn = document.querySelector('.nav-link.active');
+        const modal = document.getElementById('docs-modal');
+        const activeBtn = document.querySelector('.nav-link.active');
+        
+        let key = specificKey || (activeBtn.innerText.toLowerCase().includes('access') ? "lab1" : 
+                   activeBtn.innerText.toLowerCase().includes('misconfig') ? "lab2" : 
+                   activeBtn.innerText.toLowerCase().includes('auth') ? "lab3" : "lab4");
+
+        const info = briefings[key];
+
+        // Expanded Syntax Highlighter
+        const highlight = (code) => code.replace(/\b(SELECT|FROM|WHERE|AND|INSERT|const|let|return|if|else|throw|new|import|def|get_object_or_404)\b/g, '<span class="token-keyword">$1</span>')
+                                        .replace(/('.*?'|".*?"|`.*?`)/g, '<span class="token-string">$1</span>')
+                                        .replace(/(\/\/.*|#.*)/g, '<span class="token-comment">$1</span>');
+
+        // Loop to create multiple code blocks with reduced margins
+        const codeBlocksHTML = info.codes.map(c => `
+            <div class="code-window shadow-md border border-slate-200 dark:border-slate-800 mb-3">
+                <div class="code-header">
+                    <span class="font-semibold text-slate-500 dark:text-slate-300 tracking-wider">${c.lang}</span>
+                    <div class="flex gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></div><div class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></div></div>
+                </div>
+                <div class="code-body bg-slate-50 dark:bg-slate-900/50"><pre><code>${highlight(c.code)}</code></pre></div>
+            </div>
+        `).join('');
+
+        document.getElementById('docs-content').innerHTML = `
+            <div>
+                <h4 class="text-indigo-600 dark:text-indigo-400 font-bold uppercase text-[9px] tracking-widest mb-1.5">Vulnerability Advisory</h4>
+                <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">${info.title}</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h5 class="text-slate-800 dark:text-slate-200 font-bold mb-2 text-xs italic">Threat Analysis</h5>
+                        <p class="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">${info.desc}</p>
+                    </div>
+                    <div>
+                        <h5 class="text-indigo-700 dark:text-indigo-400 font-bold mb-2 text-xs italic">Strategic Remediation</h5>
+                        <p class="text-slate-600 dark:text-slate-400 text-xs border-l-2 border-indigo-200 dark:border-indigo-900/50 pl-3">${info.remedy}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                <h5 class="text-slate-800 dark:text-slate-200 font-bold mb-3 text-[10px] uppercase tracking-wider">Secure Coding Patterns</h5>
+                ${codeBlocksHTML}
+            </div>
+        `;
+        modal.classList.toggle('hidden');
+    }
+
+    function switchTab(id, btn) {
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('.nav-link').forEach(n => {
+            n.classList.remove('active', 'bg-indigo-50', 'text-indigo-600', 'font-semibold', 'dark:bg-indigo-900/30', 'dark:text-indigo-400');
+        });
+        document.getElementById(id).classList.remove('hidden');
+        btn.classList.add('active', 'bg-indigo-50', 'text-indigo-600', 'font-semibold', 'dark:bg-indigo-900/30', 'dark:text-indigo-400');
+    }
+    function tab(id, btn) { switchTab(id, btn); }
+
+    async function l1() {
+        const res = await fetch(`/api/v1/billing/invoice/${document.getElementById('l1-in').value}`);
+        const data = await res.json();
+        const out = document.getElementById('l1-out');
+        out.classList.remove('hidden');
+        out.innerText = JSON.stringify(data, null, 4);
+    }
     
-    let key = specificKey || (activeLabBtn.innerText.toLowerCase().includes('access') ? "lab1" : 
-               activeLabBtn.innerText.toLowerCase().includes('misconfig') ? "lab2" : 
-               activeLabBtn.innerText.toLowerCase().includes('auth') ? "lab3" : "lab4");
+    async function l2() {
+        const res = await fetch('/api/v1/system/health');
+        const realData = await res.json();
+        
+        const fakeMetrics = {
+            status: realData.status,
+            database: realData.database,
+            uptime_seconds: Math.floor(Math.random() * 900000) + 10000,
+            system_load: [0.12, 0.05, 0.01],
+            memory_heap_mb: (Math.random() * 50 + 100).toFixed(2),
+            active_connections: Math.floor(Math.random() * 20),
+            cache_hit_ratio: "94.2%",
+            worker_threads: 8,
+            redis_cluster: "Connected"
+        };
 
-    const info = briefings[key];
+        const reqId = "req-" + Math.random().toString(36).substring(2, 10);
+        const dateStr = new Date().toUTCString();
 
-    const highlight = (code) => {
-        return code
-            .replace(/(SELECT|FROM|WHERE|AND|INSERT|INTO|UPDATE|SET|DELETE|import|const|let|function|return|if|else|get_object_or_404|ini_set|add_header|jwt\.sign|crypto_secretbox|Fernet)/g, '<span class="token-keyword">$1</span>')
-            .replace(/('.*?'|".*?"|`.*?`)/g, '<span class="token-string">$1</span>')
-            .replace(/(\/\/.*|\/\*[\s\S]*?\*\/)/g, '<span class="token-comment">$1</span>');
-    };
+        const out = document.getElementById('l2-out');
+        out.classList.remove('hidden');
+        out.innerText = `[HEADERS] HTTP/1.1 200 OK
+[HEADERS] Server: nginx/1.18.0 (Ubuntu)
+[HEADERS] Date: ${dateStr}
+[HEADERS] Content-Type: application/json; charset=utf-8
+[HEADERS] Connection: keep-alive
+[HEADERS] X-Powered-By: Express
+[HEADERS] X-Request-Id: ${reqId}
+[HEADERS] X-Debug-Mode: Enabled
+[HEADERS] X-RateLimit-Limit: 1000
+[HEADERS] X-Route-Leaked: /api/v1/system/debug/vars
+[HEADERS] X-RateLimit-Remaining: 998
+[HEADERS] Cache-Control: no-cache, no-store, must-revalidate
+[HEADERS] Access-Control-Allow-Origin: *
 
-    let codeBlocks = info.codes.map(c => `
-        <div class="code-window">
-            <div class="code-header">
-                <span class="code-lang">${c.lang}</span>
-                <div class="flex gap-1.5"><div class="w-2 h-2 rounded-full bg-zinc-800"></div><div class="w-2 h-2 rounded-full bg-zinc-800"></div></div>
-            </div>
-            <div class="code-body">
-                <pre><code>${highlight(c.code)}</code></pre>
-            </div>
-        </div>
-    `).join('');
-
-    document.getElementById('docs-content').innerHTML = `
-        <div class="max-w-3xl mx-auto space-y-10">
-            <!-- Header Section -->
-            <div class="border-l-4 border-orange-600 pl-6">
-                <h4 class="text-orange-500 font-bold uppercase text-[9px] tracking-[0.4em] mb-2">// SECURITY ADVISORY</h4>
-                <h2 class="text-white text-3xl font-bold tracking-tight">${info.title}</h2>
-            </div>
-
-            <!-- Analysis Section -->
-            <div class="space-y-4">
-                <h5 class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Technical Analysis</h5>
-                <p class="text-zinc-200 text-sm leading-relaxed">${info.desc}</p>
-            </div>
-
-            <!-- Strategy Section -->
-            <div class="space-y-4">
-                <h5 class="text-orange-500 text-[10px] font-bold uppercase tracking-widest">Remediation Strategy</h5>
-                <p class="text-zinc-100 text-sm italic border-l border-zinc-800 pl-4 leading-relaxed">${info.remedy}</p>
-            </div>
-
-            <!-- Code Examples Section (Stacked) -->
-            <div class="pt-6 border-t border-zinc-900">
-                <h5 class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-4">Secure Implementation Examples</h5>
-                ${codeBlocks}
-            </div>
-        </div>
-    `;
-    modal.classList.toggle('hidden');
-}
-
-        function switchTab(id, btn) {
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.remove('hidden');
-            btn.classList.add('active');
-        }
-
-        function tab(id, btn) { switchTab(id, btn); }
-
-
-        async function l1() {
-            const res = await fetch(`/api/v1/billing/invoice/${document.getElementById('l1-in').value}`);
+[BODY]
+${JSON.stringify(fakeMetrics, null, 2)}`;
+    }
+    
+    async function l3() {
+        const res = await fetch('/api/v1/auth/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ username: document.getElementById('l3-u').value })
+        });
+        const data = await res.json();
+        const out = document.getElementById('l3-out');
+        out.classList.remove('hidden');
+        out.innerText = `Server Identity Provider Response:\n\n${data.message}`;
+    }
+    
+    async function l4() {
+        const res = await fetch('/api/v1/user/me', { headers: { 'x-session-data': document.getElementById('l4-h').value }});
+        const data = await res.json();
+        const out = document.getElementById('l4-out');
+        out.classList.remove('hidden');
+        out.innerText = JSON.stringify(data, null, 4);
+    }
+    
+    async function verify() {
+        const flagVal = document.getElementById('flag-in').value.trim();
+        const res = await fetch('/api/verify-flag', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ flag: flagVal })
+        });
+        if (res.ok) {
             const data = await res.json();
-            const out = document.getElementById('l1-out');
-            out.classList.remove('hidden');
-            out.innerText = JSON.stringify(data, null, 4);
-        }
-
-        async function l2() {
-            const res = await fetch('/api/v1/system/health');
-            const data = await res.json();
-            const out = document.getElementById('l2-out');
-            out.classList.remove('hidden');
-            out.innerText = `Headers Detected:\nX-Debug-Mode: Enabled\nX-Route-Leaked: /api/v1/system/debug/vars\n\nBody: ${JSON.stringify(data, null, 2)}`;
-        }
-
-        async function l3() {
-            const res = await fetch('/api/v1/auth/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ username: document.getElementById('l3-u').value })
-            });
-            const data = await res.json();
-            const out = document.getElementById('l3-out');
-            out.classList.remove('hidden');
-            out.innerText = `HTTP ${res.status}: ${data.message}`;
-        }
-
-        async function l4() {
-            const res = await fetch('/api/v1/user/me', { headers: { 'x-session-data': document.getElementById('l4-h').value }});
-            const data = await res.json();
-            const out = document.getElementById('l4-out');
-            out.classList.remove('hidden');
-            out.innerText = JSON.stringify(data, null, 4);
-        }
-
-        async function verify() {
-            const flagVal = document.getElementById('flag-in').value.trim();
-            const res = await fetch('/api/verify-flag', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ flag: flagVal })
-            });
-            if (res.ok) {
-                const data = await res.json();
-                const p = JSON.parse(localStorage.getItem('p_v7') || '{}');
-                p[data.lab] = true;
-                localStorage.setItem('p_v7', JSON.stringify(p));
-                
-                // Show Banner
-                const banner = document.getElementById('success-banner');
-                banner.classList.remove('hidden');
-                setTimeout(() => banner.classList.add('hidden'), 3000);
-                
-                // AUTO TRIGGER DOCS
-                setTimeout(() => {
-                    toggleDocs(data.lab);
-                }, 1000);
-
-                document.getElementById('flag-in').value = "";
-                updateProgress();
-            } else alert("INVALID_FLAG: ANALYSIS_REJECTED");
-        }
-
-        function updateProgress() {
             const p = JSON.parse(localStorage.getItem('p_v7') || '{}');
-            const solved = Object.keys(p).length;
-            const pct = Math.floor(solved / 4 * 100);
-            document.getElementById('prog-bar').style.width = pct + '%';
-            document.getElementById('prog-pct').innerText = `Progress: ${pct}%`;
-        }
-        updateProgress();
-    </script>
+            p[data.lab] = true;
+            localStorage.setItem('p_v7', JSON.stringify(p));
+            document.getElementById('success-banner').classList.remove('hidden');
+            setTimeout(() => document.getElementById('success-banner').classList.add('hidden'), 3000);
+            setTimeout(() => toggleDocs(data.lab), 1000);
+            document.getElementById('flag-in').value = "";
+            updateProgress();
+        } else alert("Invalid Analisys Result.");
+    }
+    
+    function updateProgress() {
+        const p = JSON.parse(localStorage.getItem('p_v7') || '{}');
+        const solved = Object.keys(p).length;
+        const pct = Math.floor(solved / 4 * 100);
+        document.getElementById('prog-bar').style.width = pct + '%';
+        document.getElementById('prog-pct').innerText = `Audit Score: ${pct}%`;
+    }
+    updateProgress();
+</script>
 </body>
 </html>
