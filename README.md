@@ -71,9 +71,9 @@ The platform currently features 4 interactive modules, each mapped to real-world
    ```
    
 2.  Install dependencies and start the server:
-
+    ```bash
     docker-compose up
-
+    ```
 
 3.  Open your browser and navigate to:
 
