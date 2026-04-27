@@ -6,59 +6,37 @@
     <title>AuditLabs | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {}
-            }
-        }
+        tailwind.config = { darkMode: 'class' }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
         .mono { font-family: 'JetBrains Mono', monospace; }
-        
-        /* Professional UI Elements */
-        .glass-card { border-radius: 10px; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: background-color 0.3s, border-color 0.3s; border-width: 1px; }
+        .glass-card { border-radius: 10px; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); border-width: 1px; }
         .console { font-size: 12px; background: #0f172a; border-radius: 8px; color: #e2e8f0; border: 1px solid #1e293b; line-height: 1.5; }
-        
         input { outline: none; transition: all 0.2s; border-radius: 6px; border-width: 1px; }
         input:focus { ring: 2px; }
-        
-        /* Modal & Progress */
         .docs-overlay { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 100; }
         .code-window { background: #1e293b; border-radius: 8px; overflow: hidden; margin-top: 0.75rem; }
-        .code-header { background: #0f172a; padding: 6px 12px; font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .code-header { background: #0f172a; padding: 6px 12px; font-size: 10px; color: #94a3b8; text-transform: uppercase; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
         .code-body { padding: 12px; color: #cbd5e1; font-family: 'JetBrains Mono', monospace; font-size: 11px; overflow-x: auto; }
-
-        /* Syntax colors */
         .token-keyword { color: #818cf8; font-weight: 600; }
         .token-string { color: #34d399; }
         .token-comment { color: #64748b; font-style: italic; }
-        
-        /* Custom Scrollbar for App Container */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #334155; }
-	body { 
-		font-family: 'Inter', sans-serif; 
-		transition: background-color 0.3s, color 0.3s; 
-		background-image: url('https://4kwallpapers.com/images/walls/thumbs_3t/24075.jpg'); 
-	}
-
-	html.dark body {
-		background-image: url('https://4kwallpapers.com/images/walls/thumbs_3t/2482.jpg');
-	}
+        body { background-image: url('https://4kwallpapers.com/images/walls/thumbs_3t/24075.jpg'); }
+        html.dark body { background-image: url('https://4kwallpapers.com/images/walls/thumbs_3t/2482.jpg'); }
     </style>
 </head>
 <body class="flex h-screen w-screen overflow-hidden text-slate-800 dark:text-slate-200 py-[5vh] px-6 justify-center items-center bg-cover bg-center">
 
-    <!-- APP WRAPPER (Floating Window Effect) -->
     <div class="flex w-full max-w-[1800px] h-full bg-slate-50 dark:bg-[#0f1423] rounded-2xl shadow-2xl border border-slate-300 dark:border-slate-800 overflow-hidden relative">
         
         <!-- SIDEBAR -->
-        <aside class="w-60 bg-white dark:bg-slate-900/50 border-r border-slate-200 dark:border-slate-800 p-5 flex flex-col h-full shrink-0">
+        <aside class="w-64 bg-white dark:bg-slate-900/50 border-r border-slate-200 dark:border-slate-800 p-5 flex flex-col h-full shrink-0">
             <div class="flex items-center gap-2 px-1 mb-6">
                 <div class="w-7 h-7 bg-indigo-600 rounded-md flex items-center justify-center text-white shadow-md shadow-indigo-500/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -68,10 +46,25 @@
             
             <nav class="flex-1 space-y-1">
                 <div class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1 mb-2">Modules</div>
-                <button onclick="tab('lab1', this)" class="nav-link flex items-center gap-2.5 w-full px-3 py-2 text-xs rounded-md active bg-indigo-50 text-indigo-600 font-semibold dark:bg-indigo-900/30 dark:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                    Access Control
-                </button>
+                
+                <div>
+                    <button onclick="toggleMenu('menu-ac', this)" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <span class="font-semibold">Access Control</span>
+                        <svg class="chevron ml-auto w-3.5 h-3.5 transition-transform duration-200 rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div id="menu-ac" class="pl-6 space-y-1 mt-1">
+                        <button onclick="tab('lab1', this)" class="sub-link flex items-center gap-2 w-full px-3 py-1.5 text-[11px] rounded-md active bg-indigo-50 text-indigo-600 font-semibold dark:bg-indigo-900/30 dark:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                            <div class="w-1.5 h-1.5 rounded-full bg-current"></div>
+                            IDOR (Invoices)
+                        </button>
+                        <button onclick="tab('lab1b', this)" class="sub-link flex items-center gap-2 w-full px-3 py-1.5 text-[11px] rounded-md text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                            <div class="w-1.5 h-1.5 rounded-full bg-current"></div>
+                            Cookie-Based Role
+                        </button>
+                    </div>
+                </div>
+
                 <button onclick="tab('lab2', this)" class="nav-link flex items-center gap-2.5 w-full px-3 py-2 text-xs rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     Misconfiguration
@@ -98,18 +91,13 @@
 
         <!-- MAIN AREA -->
         <main class="flex-1 overflow-y-auto flex flex-col relative">
-            
-            <!-- TOPBAR -->
             <header class="h-14 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 shrink-0 sticky top-0 z-10">
                 <div id="breadcrumb" class="text-[11px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wide">Environment <span class="text-slate-800 dark:text-slate-300 font-bold ml-2">STAGING-CLUSTER-01</span></div>
-                
                 <div class="flex items-center gap-3">
-                    <!-- DARK MODE TOGGLE -->
                     <button onclick="toggleTheme()" class="p-1.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Toggle Dark Mode">
                         <svg id="theme-icon-dark" class="hidden w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                         <svg id="theme-icon-light" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     </button>
-
                     <button onclick="toggleDocs()" class="flex items-center gap-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-3 py-1.5 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition text-[10px] uppercase tracking-wider font-bold shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
                         Technical Briefing
@@ -123,20 +111,32 @@
 
             <!-- Content Container -->
             <div class="p-6 max-w-3xl mx-auto w-full flex-1 flex flex-col">
-                <!-- CONTENT AREA -->
                 <div class="w-full">
                     
-                    <!-- LAB 1 -->
+                    <!-- LAB 1: IDOR -->
                     <div id="lab1" class="tab-pane animate-in fade-in duration-300">
                         <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-1">Order Management Service</h2>
                         <p class="text-slate-500 dark:text-slate-400 text-xs mb-5 leading-relaxed">Check and manage customer invoices. Vulnerability suspected in direct reference parameter mapping.</p>
                         <div class="glass-card bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800/80 p-5">
                             <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Invoice Identifier</label>
                             <div class="flex gap-2 mb-4">
-                                <input type="number" id="l1-in" value="1001" class="px-3 py-2 w-40 text-xs font-semibold bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:border-indigo-500 dark:focus:border-indigo-500">
+                                <input type="number" id="l1-in" value="1001" class="px-3 py-2 w-40 text-xs font-semibold bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:border-indigo-500">
                                 <button onclick="l1()" class="bg-indigo-600 text-white px-5 py-2 rounded-md text-[10px] font-bold uppercase hover:bg-indigo-700 transition shadow-sm">Fetch Invoice</button>
                             </div>
                             <div id="l1-out" class="console p-4 hidden whitespace-pre-wrap font-mono"></div>
+                        </div>
+                    </div>
+
+                    <!-- LAB 1B: COOKIE PRIVILEGE ESCALATION -->
+                    <div id="lab1b" class="tab-pane hidden animate-in fade-in duration-300">
+                        <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-1">Admin Control Panel</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs mb-5 leading-relaxed">Access the administrative dashboard. Your access level is determined by client-side cookies.</p>
+                        <div class="glass-card bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800/80 p-5">
+                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-md p-3 mb-4 text-[11px] text-blue-700 dark:text-blue-500">
+                                <strong>Hint:</strong> Inspect your browser cookies (F12 > Application > Cookies).
+                            </div>
+                            <button onclick="l1b()" class="bg-indigo-600 text-white px-5 py-2 rounded-md text-[10px] font-bold uppercase hover:bg-indigo-700 transition shadow-sm w-full md:w-auto">Enter Admin Dashboard</button>
+                            <div id="l1b-out" class="console mt-4 p-4 hidden whitespace-pre-wrap font-mono"></div>
                         </div>
                     </div>
 
@@ -200,20 +200,22 @@
         </main>
     </div>
 
-    <!-- DOCS MODAL (CLEANER) -->
+    <!-- DOCS MODAL -->
     <div id="docs-modal" class="fixed inset-0 z-[150] flex items-center justify-center hidden docs-overlay p-4 sm:p-6">
         <div class="max-w-3xl w-full bg-white dark:bg-slate-900 rounded-xl p-8 relative overflow-y-auto max-h-[85vh] shadow-2xl border border-slate-200 dark:border-slate-700">
             <button onclick="toggleDocs()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-            <div id="docs-content" class="space-y-6">
-                <!-- Injected -->
-            </div>
+            <div id="docs-content" class="space-y-6"></div>
         </div>
     </div>
 
 <script>
-    // --- THEME TOGGLE LOGIC ---
+    if(!document.cookie.includes('role=')) {
+        document.cookie = "role=user; path=/";
+    }
+
+    // THEME LOGIC
     function initTheme() {
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -223,19 +225,16 @@
             updateThemeIcon(false);
         }
     }
-    
     function toggleTheme() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.theme = isDark ? 'dark' : 'light';
         updateThemeIcon(isDark);
     }
-
     function updateThemeIcon(isDark) {
         document.getElementById('theme-icon-dark').classList.toggle('hidden', !isDark);
         document.getElementById('theme-icon-light').classList.toggle('hidden', isDark);
     }
     initTheme();
-    // --------------------------
 
     const briefings = {
         lab1: {
@@ -248,14 +247,24 @@
                 { lang: "PHP (PDO)", code: "$stmt = $pdo->prepare('SELECT * FROM invoices WHERE id = :id AND owner_id = :uid');\n$stmt->execute(['id' => $id, 'uid' => $_SESSION['user_id']]);" }
             ]
         },
+        lab1b: {
+            title: "Privilege Escalation via Cookie Manipulation",
+            desc: "The application relies on an unverified, plaintext client-side cookie to determine the user's role. By modifying this cookie directly in the browser (F12), an attacker can escalate their privileges.",
+            remedy: "Never trust client-side data for authorization. Use secure, HttpOnly, signed cookies or server-side sessions to validate the user's role.",
+            codes: [
+                { lang: "Node.js (Express-Session)", code: "if (req.session.role !== 'admin') {\n    return res.status(403).send('Forbidden');\n}" },
+                { lang: "PHP (Native Sessions)", code: "session_start();\nif (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {\n    die('Access Denied');\n}" },
+                { lang: "Python (Flask)", code: "if session.get('role') != 'admin':\n    abort(403)" }
+            ]
+        },
         lab2: {
             title: "Security Misconfiguration",
             desc: "Improper environment configuration led to debug headers (X-Debug-Mode) being active in production, leaking the existence of maintenance endpoints hidden among normal server chatter.",
             remedy: "Standardize configurations across environments and strip debugging headers in production web server settings.",
             codes: [
                 { lang: "Nginx Configuration", code: "proxy_hide_header X-Debug-Mode;\nadd_header Server-Tokens off;" },
-                { lang: "Node.js (Express)", code: "app.disable('x-powered-by');\napp.use((err, req, res, next) => {\n    res.status(500).send('Internal Server Error');\n});" },
-                { lang: "Java (Spring Boot properties)", code: "server.error.include-stacktrace=never\nmanagement.endpoints.web.exposure.include=health" }
+                { lang: "Node.js (Express)", code: "app.disable('x-powered-by');\nif (process.env.NODE_ENV === 'production') {\n    app.removeHeader('X-Debug-Mode');\n}" },
+                { lang: "Java (Spring Boot)", code: "# application.properties\nserver.error.include-stacktrace=never\nmanagement.endpoints.web.exposure.include=health" }
             ]
         },
         lab3: {
@@ -264,7 +273,7 @@
             remedy: "Use a single, generic error message like 'Invalid username or password' for all failed authentication attempts.",
             codes: [
                 { lang: "Node.js (Express)", code: "if (!user || !validPass) {\n    return res.status(401).json({ message: 'Invalid username or password' });\n}" },
-                { lang: "Python (Flask)", code: "if not user or not check_password_hash(user.password, password):\n    return jsonify({'message': 'Invalid username or password'}), 401" },
+                { lang: "Python (FastAPI)", code: "if not user or not verify_password(plain_password, user.password):\n    return jsonify({'error': 'Invalid credentials'}), 401" },
                 { lang: "Java (Spring Security)", code: "if (!passwordEncoder.matches(rawPassword, user.getPassword())) {\n    throw new BadCredentialsException(\"Invalid username or password\");\n}" }
             ]
         },
@@ -274,7 +283,7 @@
             remedy: "Sign and encrypt cookies using strong algorithms (HMAC) or use modern tokens like JWT with secret key validation.",
             codes: [
                 { lang: "Node.js (JWT)", code: "const token = jwt.sign({ role: 'admin' }, process.env.SIGNING_KEY, { expiresIn: '1h' });" },
-                { lang: "Python (PyJWT)", code: "import jwt\ntoken = jwt.encode({'role': 'admin'}, app.config['SECRET_KEY'], algorithm='HS256')" },
+                { lang: "Python (PyJWT)", code: "import jwt\ntoken = jwt.encode({'role': 'admin'}, SECRET_KEY, algorithm='HS256')" },
                 { lang: "PHP (Sodium)", code: "$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);\n$encrypted = sodium_crypto_secretbox(json_encode(['role'=>'admin']), $nonce, $key);" }
             ]
         }
@@ -282,20 +291,19 @@
 
     function toggleDocs(specificKey = null) {
         const modal = document.getElementById('docs-modal');
-        const activeBtn = document.querySelector('.nav-link.active');
+        const activeBtn = document.querySelector('.nav-link.active') || document.querySelector('.sub-link.active');
         
-        let key = specificKey || (activeBtn.innerText.toLowerCase().includes('access') ? "lab1" : 
-                   activeBtn.innerText.toLowerCase().includes('misconfig') ? "lab2" : 
-                   activeBtn.innerText.toLowerCase().includes('auth') ? "lab3" : "lab4");
+        let key = specificKey || 
+                  (activeBtn.onclick.toString().includes('lab1b') ? "lab1b" :
+                   activeBtn.onclick.toString().includes('lab1') ? "lab1" : 
+                   activeBtn.onclick.toString().includes('lab2') ? "lab2" : 
+                   activeBtn.onclick.toString().includes('lab3') ? "lab3" : "lab4");
 
         const info = briefings[key];
-
-        // Expanded Syntax Highlighter
         const highlight = (code) => code.replace(/\b(SELECT|FROM|WHERE|AND|INSERT|const|let|return|if|else|throw|new|import|def|get_object_or_404)\b/g, '<span class="token-keyword">$1</span>')
                                         .replace(/('.*?'|".*?"|`.*?`)/g, '<span class="token-string">$1</span>')
                                         .replace(/(\/\/.*|#.*)/g, '<span class="token-comment">$1</span>');
 
-        // Loop to create multiple code blocks with reduced margins
         const codeBlocksHTML = info.codes.map(c => `
             <div class="code-window shadow-md border border-slate-200 dark:border-slate-800 mb-3">
                 <div class="code-header">
@@ -310,7 +318,6 @@
             <div>
                 <h4 class="text-indigo-600 dark:text-indigo-400 font-bold uppercase text-[9px] tracking-widest mb-1.5">Vulnerability Advisory</h4>
                 <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">${info.title}</h2>
-                
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <h5 class="text-slate-800 dark:text-slate-200 font-bold mb-2 text-xs italic">Threat Analysis</h5>
@@ -330,107 +337,132 @@
         modal.classList.toggle('hidden');
     }
 
+    function toggleMenu(id, btn) {
+        const menu = document.getElementById(id);
+        const icon = btn.querySelector('.chevron');
+        if (menu.classList.contains('hidden')) {
+            menu.classList.remove('hidden');
+            icon.style.transform = 'rotate(180deg)';
+        } else {
+            menu.classList.add('hidden');
+            icon.style.transform = 'rotate(0deg)';
+        }
+    }
+
     function switchTab(id, btn) {
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
-        document.querySelectorAll('.nav-link').forEach(n => {
+        document.querySelectorAll('.nav-link, .sub-link').forEach(n => {
             n.classList.remove('active', 'bg-indigo-50', 'text-indigo-600', 'font-semibold', 'dark:bg-indigo-900/30', 'dark:text-indigo-400');
+            if(n.classList.contains('sub-link')) n.classList.add('text-slate-500'); 
         });
         document.getElementById(id).classList.remove('hidden');
         btn.classList.add('active', 'bg-indigo-50', 'text-indigo-600', 'font-semibold', 'dark:bg-indigo-900/30', 'dark:text-indigo-400');
+        if(btn.classList.contains('sub-link')) btn.classList.remove('text-slate-500');
     }
     function tab(id, btn) { switchTab(id, btn); }
 
+
     async function l1() {
-        const res = await fetch(`/api/v1/billing/invoice/${document.getElementById('l1-in').value}`);
-        const data = await res.json();
         const out = document.getElementById('l1-out');
         out.classList.remove('hidden');
-        out.innerText = JSON.stringify(data, null, 4);
+        try {
+            const res = await fetch(`/api/v1/billing/invoice/${document.getElementById('l1-in').value}`);
+            const data = await res.json();
+            out.innerText = JSON.stringify(data, null, 4);
+        } catch (err) { out.innerText = "Connection Error to Backend Server."; }
     }
-    
+
+    async function l1b() {
+        const out = document.getElementById('l1b-out');
+        out.classList.remove('hidden');
+        try {
+            const res = await fetch('/api/v1/admin/dashboard');
+            const data = await res.json();
+            if (res.ok) {
+                out.innerText = `[200 OK]\n${data.message}\nSecret Flag: ${data.flag}`;
+                out.style.color = '#10b981';
+            } else {
+                out.innerText = `[403 Forbidden]\n${data.error}\n\n(Tip: ${data.hint})`;
+                out.style.color = '#ef4444';
+            }
+        } catch (err) { out.innerText = "Connection Error to Backend Server."; }
+    }
+
     async function l2() {
-        const res = await fetch('/api/v1/system/health');
-        const realData = await res.json();
-        
-        const fakeMetrics = {
-            status: realData.status,
-            database: realData.database,
-            uptime_seconds: Math.floor(Math.random() * 900000) + 10000,
-            system_load: [0.12, 0.05, 0.01],
-            memory_heap_mb: (Math.random() * 50 + 100).toFixed(2),
-            active_connections: Math.floor(Math.random() * 20),
-            cache_hit_ratio: "94.2%",
-            worker_threads: 8,
-            redis_cluster: "Connected"
-        };
-
-        const reqId = "req-" + Math.random().toString(36).substring(2, 10);
-        const dateStr = new Date().toUTCString();
-
         const out = document.getElementById('l2-out');
         out.classList.remove('hidden');
-        out.innerText = `[HEADERS] HTTP/1.1 200 OK
-[HEADERS] Server: nginx/1.18.0 (Ubuntu)
-[HEADERS] Date: ${dateStr}
-[HEADERS] Content-Type: application/json; charset=utf-8
-[HEADERS] Connection: keep-alive
+        try {
+            const res = await fetch('/api/v1/system/health');
+            const fakeMetrics = await res.json();
+            const leakedRoute = res.headers.get('X-Route-Leaked') || "Route Header Hidden by CORS (Check DevTools)";
+            const debugMode = res.headers.get('X-Debug-Mode') || "Enabled";
+
+            out.innerText = `[HEADERS] HTTP/1.1 200 OK
+[HEADERS] Date: ${new Date().toUTCString()}
 [HEADERS] X-Powered-By: Express
-[HEADERS] X-Request-Id: ${reqId}
-[HEADERS] X-Debug-Mode: Enabled
-[HEADERS] X-RateLimit-Limit: 1000
-[HEADERS] X-Route-Leaked: /api/v1/system/debug/vars
+[HEADERS] X-Debug-Mode: ${debugMode}
+[HEADERS] X-Route-Leaked: ${leakedRoute}
 [HEADERS] X-RateLimit-Remaining: 998
-[HEADERS] Cache-Control: no-cache, no-store, must-revalidate
-[HEADERS] Access-Control-Allow-Origin: *
 
 [BODY]
 ${JSON.stringify(fakeMetrics, null, 2)}`;
+        } catch (err) { out.innerText = "Connection Error to Backend Server."; }
     }
-    
+
     async function l3() {
-        const res = await fetch('/api/v1/auth/login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ username: document.getElementById('l3-u').value })
-        });
-        const data = await res.json();
         const out = document.getElementById('l3-out');
         out.classList.remove('hidden');
-        out.innerText = `Server Identity Provider Response:\n\n${data.message}`;
+        try {
+            const res = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ username: document.getElementById('l3-u').value })
+            });
+            const data = await res.json();
+            out.innerText = `Server Response [HTTP ${res.status}]:\n\n${data.message}`;
+        } catch (err) { out.innerText = "Connection Error to Backend Server."; }
     }
-    
+
     async function l4() {
-        const res = await fetch('/api/v1/user/me', { headers: { 'x-session-data': document.getElementById('l4-h').value }});
-        const data = await res.json();
         const out = document.getElementById('l4-out');
         out.classList.remove('hidden');
-        out.innerText = JSON.stringify(data, null, 4);
+        try {
+            const res = await fetch('/api/v1/user/me', { headers: { 'x-session-data': document.getElementById('l4-h').value }});
+            const data = await res.json();
+            out.innerText = JSON.stringify(data, null, 4);
+        } catch (err) { out.innerText = "Connection Error to Backend Server."; }
     }
-    
+
     async function verify() {
         const flagVal = document.getElementById('flag-in').value.trim();
-        const res = await fetch('/api/verify-flag', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ flag: flagVal })
-        });
-        if (res.ok) {
-            const data = await res.json();
-            const p = JSON.parse(localStorage.getItem('p_v7') || '{}');
-            p[data.lab] = true;
-            localStorage.setItem('p_v7', JSON.stringify(p));
-            document.getElementById('success-banner').classList.remove('hidden');
-            setTimeout(() => document.getElementById('success-banner').classList.add('hidden'), 3000);
-            setTimeout(() => toggleDocs(data.lab), 1000);
-            document.getElementById('flag-in').value = "";
-            updateProgress();
-        } else alert("Invalid Analisys Result.");
+        try {
+            const res = await fetch('/api/verify-flag', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ flag: flagVal })
+            });
+            
+            if (res.ok) {
+                const data = await res.json();
+                const p = JSON.parse(localStorage.getItem('p_v8') || '{}');
+                p[data.lab] = true;
+                localStorage.setItem('p_v8', JSON.stringify(p));
+                
+                document.getElementById('success-banner').classList.remove('hidden');
+                setTimeout(() => document.getElementById('success-banner').classList.add('hidden'), 3000);
+                setTimeout(() => toggleDocs(data.lab), 1000);
+                document.getElementById('flag-in').value = "";
+                updateProgress();
+            } else {
+                alert("Invalid Analysis Result. Incorrect Flag.");
+            }
+        } catch (err) { alert("Server connection failed."); }
     }
-    
+
     function updateProgress() {
-        const p = JSON.parse(localStorage.getItem('p_v7') || '{}');
+        const p = JSON.parse(localStorage.getItem('p_v8') || '{}');
         const solved = Object.keys(p).length;
-        const pct = Math.floor(solved / 4 * 100);
+        const pct = Math.floor(solved / 5 * 100);
         document.getElementById('prog-bar').style.width = pct + '%';
         document.getElementById('prog-pct').innerText = `Audit Score: ${pct}%`;
     }
