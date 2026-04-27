@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./docs/dashboard-preview.png" alt="CloudAudit Security Dashboard" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+  <img src="./docs/dashboard-preview.png" alt="AuditLabs Security Dashboard" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
   
   <br><br>
 
@@ -16,35 +16,40 @@
 
 ## 📖 Overview
 
-**SecAudit** is an intentionally vulnerable web application disguised as a modern, sleek Cloud SaaS Platform. It is designed to help developers, security enthusiasts, and penetration testers understand common web vulnerabilities in a realistic, context-driven environment.
+**AuditLabs** is an intentionally vulnerable web application disguised as a modern, sleek Cloud SaaS Platform. It is designed to help developers, security enthusiasts, and penetration testers understand common web vulnerabilities in a realistic, context-driven environment.
 
-Instead of traditional "hacker terminal" aesthetics, CloudAudit places the user inside a realistic corporate portal, demonstrating how critical flaws often hide behind clean user interfaces.
+Instead of traditional "hacker terminal" aesthetics, AuditLabs places the user inside a realistic corporate portal, demonstrating how critical flaws often hide behind clean user interfaces.
 
 ---
 
 ## 🎯 Vulnerabilities Addressed (The Labs)
 
-The platform currently features 4 interactive modules, each mapped to real-world security missteps:
+The platform features 5 interactive modules mapped to real-world security missteps:
 
-### 1. Insecure Direct Object Reference (IDOR) / Broken Access Control
-* **The Scenario:** The Order Management Service fetches client invoices based on an identity context bound to the DOM.
-* **The Flaw:** The backend trusts user-supplied input (`accountId`) without validating if the current session actually owns that ID.
-* **The Attack:** Attackers can inspect the application (F12 / DevTools), manipulate the data-attributes, and extract sensitive invoices belonging to administrative accounts.
+### 1. Broken Access Control
+*   **1.1. Insecure Direct Object Reference (IDOR)**
+    * **The Scenario:** The Order Management Service fetches client invoices based on an identity context bound to the DOM.
+    * **The Flaw:** The backend trusts user-supplied input (`accountId`) without validating if the current session actually owns that ID.
+    * **The Attack:** Attackers can manipulate data-attributes in the HTML to extract sensitive invoices belonging to other accounts.
+*   **1.2. Privilege Escalation via Cookie Manipulation**
+    * **The Scenario:** An Administrative Control Panel that restricts access based on user roles.
+    * **The Flaw:** The system determines authorization by reading a plaintext, client-side cookie (`role=user`).
+    * **The Attack:** Attackers can use Browser DevTools (F12) to modify the cookie value to `role=admin`, bypassing server-side checks to gain full administrative access.
 
 ### 2. Security Misconfiguration
 * **The Scenario:** An Internal Service Health dashboard used by administrators.
-* **The Flaw:** Improper production configuration leaves debug headers active (`X-Debug-Mode`) and leaks internal maintenance routes amidst a sea of legitimate server metrics.
-* **The Attack:** Attackers probe the diagnostic endpoints and analyze HTTP response headers to map out hidden infrastructure.
+* **The Flaw:** Improper production configuration leaves debug headers active (`X-Debug-Mode`) and leaks internal maintenance routes via HTTP headers.
+* **The Attack:** Attackers analyze response headers to discover hidden diagnostic endpoints and system paths.
 
 ### 3. Authentication Failures (Account Enumeration)
 * **The Scenario:** An Identity Provider Probe testing login endpoints.
-* **The Flaw:** The API returns inconsistent HTTP responses and verbose error messages depending on whether a username exists in the database or not.
-* **The Attack:** Attackers can automate requests to differentiate between "User not found" and "Incorrect password", allowing them to enumerate valid accounts for targeted brute-force attacks.
+* **The Flaw:** The API returns different HTTP responses or messages depending on whether a username exists in the database.
+* **The Attack:** Attackers differentiate between "User not found" and "Incorrect password" to build a list of valid valid usernames for brute-force attacks.
 
 ### 4. Broken Session Management (Cryptographic Failure)
-* **The Scenario:** Session context sent via HTTP Headers.
-* **The Flaw:** The application serializes user session data using simple Base64 encoding rather than cryptographically signing it (e.g., JWT) or using secure server-side sessions.
-* **The Attack:** Attackers capture the Base64 payload, decode it, escalate their privileges (`role=admin`), re-encode it, and spoof an administrative session.
+* **The Scenario:** Session context sent via custom HTTP Headers.
+* **The Flaw:** The application serializes session data using Base64 encoding without cryptographic signatures or integrity checks.
+* **The Attack:** Attackers decode the Base64 payload, modify their permissions, re-encode it, and spoof an authorized session.
 
 ---
 
@@ -62,25 +67,19 @@ The platform currently features 4 interactive modules, each mapped to real-world
 
 ## 🚀 Getting Started
 
-### Prerequisites
-Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
-
 ### Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/4ybbe/sec-audit-labs.git
-   cd sec-audit-labs```
+   cd sec-audit-labs
+   ```
 
-2.  Install dependencies:
+2.  Install dependencies and start the server using Docker:
 
-    npm install
+    docker-compose up
 
-3.  Start the server:
-
-    node server.js
-
-4.  Open your browser and navigate to:
+3.  Open your browser and navigate to:
 
     http://localhost:3000
 
@@ -94,5 +93,4 @@ testing.
     environment.
   - The creator is not responsible for any misuse of the information or code
     provided in this repository.
-
 
